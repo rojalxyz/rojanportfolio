@@ -129,3 +129,104 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
     }
   });
 });
+
+// 1. Make the dark/light mode toggle draggable
+(function() {
+  var btn = document.querySelector('.unique-toggle-btn.header-toggle-right');
+  if (!btn) return;
+  var isDragging = false, startX, startY, origX, origY;
+  var touchId = null;
+  function setPosition(x, y) {
+    // Keep within viewport
+    var minX = 0, minY = 0;
+    var maxX = window.innerWidth - btn.offsetWidth;
+    var maxY = window.innerHeight - btn.offsetHeight;
+    x = Math.max(minX, Math.min(x, maxX));
+    y = Math.max(minY, Math.min(y, maxY));
+    btn.style.position = 'fixed';
+    btn.style.left = x + 'px';
+    btn.style.top = y + 'px';
+    btn.style.right = '';
+    btn.style.transform = '';
+  }
+  function onDragStart(e) {
+    isDragging = true;
+    btn.classList.add('dragging');
+    if (e.type === 'touchstart') {
+      var touch = e.touches[0];
+      touchId = touch.identifier;
+      startX = touch.clientX;
+      startY = touch.clientY;
+    } else {
+      startX = e.clientX;
+      startY = e.clientY;
+    }
+    var rect = btn.getBoundingClientRect();
+    origX = rect.left;
+    origY = rect.top;
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', onDragEnd);
+    document.addEventListener('touchmove', onDragMove, {passive:false});
+    document.addEventListener('touchend', onDragEnd);
+    e.preventDefault();
+  }
+  function onDragMove(e) {
+    if (!isDragging) return;
+    var clientX, clientY;
+    if (e.type === 'touchmove') {
+      var touch = Array.from(e.touches).find(t => t.identifier === touchId) || e.touches[0];
+      clientX = touch.clientX;
+      clientY = touch.clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    var dx = clientX - startX;
+    var dy = clientY - startY;
+    setPosition(origX + dx, origY + dy);
+    e.preventDefault();
+  }
+  function onDragEnd(e) {
+    isDragging = false;
+    btn.classList.remove('dragging');
+    document.removeEventListener('mousemove', onDragMove);
+    document.removeEventListener('mouseup', onDragEnd);
+    document.removeEventListener('touchmove', onDragMove);
+    document.removeEventListener('touchend', onDragEnd);
+    touchId = null;
+  }
+  btn.addEventListener('mousedown', onDragStart);
+  btn.addEventListener('touchstart', onDragStart, {passive:false});
+})();
+
+// 2. Contact form burst animation: always show during typing/focus on mobile
+(function() {
+  var box = document.querySelector('.contact-animated-box');
+  var form = document.querySelector('.contact-form-burst');
+  if (!box || !form) return;
+  var inputs = form.querySelectorAll('input, textarea');
+  function showForm() {
+    form.classList.add('burst-in');
+  }
+  function hideForm() {
+    form.classList.remove('burst-in');
+  }
+  // Always show animation while any input is focused or being typed in
+  inputs.forEach(function(input) {
+    input.addEventListener('focus', showForm);
+    input.addEventListener('input', showForm);
+    input.addEventListener('blur', function() {
+      // If no other input is focused, hide after a short delay
+      setTimeout(function() {
+        var stillFocused = Array.from(inputs).some(i => document.activeElement === i);
+        if (!stillFocused) hideForm();
+      }, 100);
+    });
+  });
+  // On mobile, also show on touchstart
+  box.addEventListener('touchstart', function(e) {
+    showForm();
+  });
+  // Optionally, always show burst-in on mobile while keyboard is up
+  // (No need to hide on mouseleave/blur for mobile)
+})();
