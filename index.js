@@ -130,14 +130,13 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
   });
 });
 
-// 1. Make the dark/light mode toggle draggable
+// 1. Make the dark/light mode toggle draggable (only on long press/hold)
 (function() {
   var btn = document.querySelector('.unique-toggle-btn.header-toggle-right');
   if (!btn) return;
-  var isDragging = false, startX, startY, origX, origY;
+  var isDragging = false, startX, startY, origX, origY, dragTimeout, dragReady = false;
   var touchId = null;
   function setPosition(x, y) {
-    // Keep within viewport
     var minX = 0, minY = 0;
     var maxX = window.innerWidth - btn.offsetWidth;
     var maxY = window.innerHeight - btn.offsetHeight;
@@ -150,6 +149,7 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
     btn.style.transform = '';
   }
   function onDragStart(e) {
+    if (!dragReady) return;
     isDragging = true;
     btn.classList.add('dragging');
     if (e.type === 'touchstart') {
@@ -188,6 +188,7 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
   }
   function onDragEnd(e) {
     isDragging = false;
+    dragReady = false;
     btn.classList.remove('dragging');
     document.removeEventListener('mousemove', onDragMove);
     document.removeEventListener('mouseup', onDragEnd);
@@ -195,8 +196,27 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
     document.removeEventListener('touchend', onDragEnd);
     touchId = null;
   }
-  btn.addEventListener('mousedown', onDragStart);
-  btn.addEventListener('touchstart', onDragStart, {passive:false});
+  function onPressStart(e) {
+    dragTimeout = setTimeout(function() {
+      dragReady = true;
+      onDragStart(e);
+    }, 400); // 400ms long press
+  }
+  function onPressEnd(e) {
+    clearTimeout(dragTimeout);
+    if (!isDragging && !dragReady) {
+      // Short click/tap: toggle mode
+      var btnClick = btn.onclick || btn.__onclick;
+      if (typeof btnClick === 'function') btnClick.call(btn, e);
+      else btn.click();
+    }
+    dragReady = false;
+  }
+  btn.addEventListener('mousedown', onPressStart);
+  btn.addEventListener('touchstart', onPressStart, {passive:false});
+  btn.addEventListener('mouseup', onPressEnd);
+  btn.addEventListener('mouseleave', onPressEnd);
+  btn.addEventListener('touchend', onPressEnd);
 })();
 
 // 2. Contact form burst animation: always show during typing/focus on mobile
@@ -229,4 +249,49 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
   });
   // Optionally, always show burst-in on mobile while keyboard is up
   // (No need to hide on mouseleave/blur for mobile)
+})();
+
+// Contact form success animation (updated for 3s and auto-clear)
+(function() {
+  var form = document.getElementById('contactForm');
+  var success = document.getElementById('form-success');
+  if (!form || !success) return;
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var data = new FormData(form);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', form.action);
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== XMLHttpRequest.DONE) return;
+      if (xhr.status === 200) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+        success.classList.add('pop-in-success');
+        // Optional: Add a burst/checkmark SVG
+        if (!document.getElementById('success-burst')) {
+          var burst = document.createElement('div');
+          burst.id = 'success-burst';
+          burst.innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 1rem auto;"><circle cx="32" cy="32" r="30" stroke="#39ff14" stroke-width="4" fill="#eafff2"/><path d="M20 34L29 43L44 25" stroke="#39ff14" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+          burst.style.animation = 'burst-in 0.7s cubic-bezier(0.23,1,0.32,1)';
+          success.prepend(burst);
+        }
+        // Show for 3 seconds, then clear and reset form
+        setTimeout(function() {
+          // Clear all fields
+          form.reset();
+          // Hide success, show form again
+          success.style.display = 'none';
+          form.style.display = 'block';
+          // Remove burst/checkmark if present
+          var burst = document.getElementById('success-burst');
+          if (burst) burst.remove();
+          success.classList.remove('pop-in-success');
+        }, 3000);
+      } else {
+        alert('Sorry, there was an error. Please try again!');
+      }
+    };
+    xhr.send(data);
+  });
 })();
