@@ -296,12 +296,17 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
   });
 })();
 
-// Only one social icon gets bold border when clicked
+// Only one social icon gets bold border when clicked (fixed: never hides/removes icons, no message)
 (function() {
   var socialLinks = document.querySelectorAll('.home-hero__social-icon-link');
   if (!socialLinks.length) return;
   socialLinks.forEach(function(link) {
-    link.addEventListener('click', function(e) {
+    link.addEventListener('mousedown', function(e) {
+      socialLinks.forEach(function(l) { l.classList.remove('active-social'); });
+      this.classList.add('active-social');
+      // Do not preventDefault, do not remove/hide, do not emit any message
+    });
+    link.addEventListener('focus', function(e) {
       socialLinks.forEach(function(l) { l.classList.remove('active-social'); });
       this.classList.add('active-social');
     });
