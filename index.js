@@ -295,3 +295,15 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
     xhr.send(data);
   });
 })();
+
+// Only one social icon gets bold border when clicked
+(function() {
+  var socialLinks = document.querySelectorAll('.home-hero__social-icon-link');
+  if (!socialLinks.length) return;
+  socialLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      socialLinks.forEach(function(l) { l.classList.remove('active-social'); });
+      this.classList.add('active-social');
+    });
+  });
+})();

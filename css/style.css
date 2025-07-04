@@ -1595,3 +1595,10 @@ body.with-sidebar {
     left: 0;
   }
 }
+
+/* Add bold border to only the clicked social icon */
+.home-hero__social-icon-link.active-social {
+  border-bottom: 3px solid #39ff14 !important;
+  background: rgba(57,255,20,0.08);
+  transition: border 0.2s, background 0.2s;
+}
