@@ -1554,12 +1554,28 @@ body.with-sidebar {
   box-shadow: none !important;
   outline: none !important;
   border-radius: 50%;
-  transition: box-shadow 0.2s, opacity 0.2s;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: none;
+}
+.unique-toggle-btn.header-toggle-right svg {
+  display: block;
+  margin: 0;
+  padding: 0;
 }
 .unique-toggle-btn.header-toggle-right.dragging {
-  opacity: 0.85;
-  box-shadow: 0 4px 16px 0 #39ff1440;
+  opacity: 1;
+  box-shadow: none !important;
+  background: transparent !important;
   cursor: move !important;
+}
+.unique-toggle-btn.header-toggle-right:focus,
+.unique-toggle-btn.header-toggle-right:hover {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 @media only screen and (max-width: 56.25em) {
   .unique-toggle-btn.header-toggle-right {
