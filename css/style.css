@@ -995,6 +995,16 @@ a:focus, button:focus, input:focus, textarea:focus, .btn:focus {
   .sec-pad { padding: 6rem 0; }
   .about__content, .projects__row { grid-template-columns: 1fr; grid-gap: 4rem; }
   .main-footer__upper { flex-direction: column; padding: 4rem 0; }
+  .home-hero__socials {
+    display: flex !important;
+    position: static !important;
+    border: none !important;
+    transform: none !important;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    background: transparent !important;
+  }
 }
 @media only screen and (max-width: 37.5em) {
   .heading-primary { font-size: 3.2rem; }
