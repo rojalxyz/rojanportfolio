@@ -32,8 +32,16 @@
           <ul class="header__links">
             <li class="header__link-wrapper">
               <a href="./index.html" class="header__link"> Home </a>
-         
+            </li>
           </ul>
+          <button id="uniqueDarkLightToggle" aria-label="Toggle dark/light mode" class="unique-toggle-btn header-toggle-right">
+            <span class="unique-toggle-icon">
+              <svg id="uniqueToggleSVG" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle id="toggleSun" cx="16" cy="16" r="10" fill="#FFD600"/>
+                <path id="toggleMoon" d="M22 16A6 6 0 0 1 16 22A8 8 0 1 0 22 16Z" fill="#18181b" opacity="0"/>
+              </svg>
+            </span>
+          </button>
           <div class="header__main-ham-menu-cont">
             <img
               src="./assets/svg/ham-menu.svg"
@@ -66,23 +74,27 @@
             <li class="header__sm-menu-link">
               <a href="./index.html#contact"> Contact </a>
             </li>
+
+            <li class="header__sm-menu-link">
+              <button id="darkModeToggleMobile" aria-label="Toggle dark mode" style="background:#fff;border:none;border-radius:2rem;padding:0.5rem 1.2rem;font-size:1.3rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:pointer;display:flex;align-items:center;gap:0.5rem;transition:background 0.3s;">
+                <span id="darkModeIconMobile">🌙</span>
+                <span id="darkModeTextMobile">Dark</span>
+              </button>
+            </li>
           </ul>
         </div>
       </div>
     </header>
-    <section class="project-cs-hero">
-      <div class="project-cs-hero__content">
-        <h1 class="heading-primary">Health Care</h1>
+    <section class="project-cs-hero section-fade" style="background: linear-gradient(to right, rgba(0, 98, 185, 0.8), rgba(0, 98, 185, 0.8)), url('./assets/svg/common-bg.svg'); background-size: cover; background-position: center; position: relative;">
+      <div class="project-cs-hero__content" style="padding: 15rem 0 10rem 0; max-width: 90rem; width: 92%; margin: auto;">
+        <h1 class="heading-primary">
+          Health Care
+        </h1>
         <div class="project-cs-hero__info">
-          <p class="text-primary">
-           
-This system helps patients understand their symptoms and identify potential diseases
- based on the information they provide.Additionally, it features a real-time doctor-patient 
- chat implemented using socket communication, enabling patients to consult doctors instantly
-  for further advice or clarification.
+          <p class="text-primary" style="display: block; max-width: 100vw;">
+            This system helps patients understand their symptoms and identify potential diseases based on the information they provide. Additionally, it features a real-time doctor-patient chat implemented using socket communication, enabling patients to consult doctors instantly for further advice or clarification.
           </p>
         </div>
-       
       </div>
     </section>
     <section class="project-details">
@@ -160,7 +172,7 @@ This system helps patients understand their symptoms and identify potential dise
               class="project-details__showcase-img"
             />
             <p class="description">
-               Patients can chat with doctors using the above UI after selecting the doctor’s specialization and name.
+               Patients can chat with doctors using the above UI after selecting the doctor's specialization and name.
               </p>
 
             <p class="figure">
@@ -197,7 +209,7 @@ This system helps patients understand their symptoms and identify potential dise
               class="project-details__showcase-img"
             />
             <p class="description">
-              This is the doctor’s UI, which displays the appointment list along with options to add prescriptions,
+              This is the doctor's UI, which displays the appointment list along with options to add prescriptions,
                chat with patients, or remove appointments from the list.
               </p>
           
@@ -314,5 +326,33 @@ Overall, this project aims to simplify healthcare interactions, improve disease 
       </div>
     </footer>
     <script src="./index.js"></script>
+    <script>
+    (function() {
+      var btn = document.getElementById('uniqueDarkLightToggle');
+      var svg = document.getElementById('uniqueToggleSVG');
+      var sun = document.getElementById('toggleSun');
+      var moon = document.getElementById('toggleMoon');
+      function setMode(dark) {
+        if (dark) {
+          document.documentElement.classList.add('dark-mode');
+          sun.setAttribute('fill', '#b5ffe1');
+          sun.setAttribute('r', '7');
+          moon.setAttribute('opacity', '1');
+        } else {
+          document.documentElement.classList.remove('dark-mode');
+          sun.setAttribute('fill', '#FFD600');
+          sun.setAttribute('r', '10');
+          moon.setAttribute('opacity', '0');
+        }
+        localStorage.setItem('theme-mode', dark ? 'dark' : 'light');
+      }
+      var saved = localStorage.getItem('theme-mode');
+      setMode(saved === 'dark');
+      if (btn) btn.onclick = function() {
+        var isDark = document.documentElement.classList.contains('dark-mode');
+        setMode(!isDark);
+      };
+    })();
+    </script>
   </body>
 </html>
