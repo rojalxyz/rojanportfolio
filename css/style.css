@@ -1549,24 +1549,17 @@ body.with-sidebar {
 }
 
 .unique-toggle-btn.header-toggle-right {
-  position: absolute;
-  right: 2.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  z-index: 1200;
-  padding: 0.2rem 0.5rem;
-  display: flex;
-  align-items: center;
-  transition: box-shadow 0.2s, background 0.2s;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border-radius: 50%;
+  transition: box-shadow 0.2s, opacity 0.2s;
 }
-.unique-toggle-btn.header-toggle-right:focus,
-.unique-toggle-btn.header-toggle-right:hover {
-  box-shadow: 0 0 0 4px #39ff14cc;
-  background: rgba(57,255,20,0.08);
+.unique-toggle-btn.header-toggle-right.dragging {
+  opacity: 0.85;
+  box-shadow: 0 4px 16px 0 #39ff1440;
+  cursor: move !important;
 }
 @media only screen and (max-width: 56.25em) {
   .unique-toggle-btn.header-toggle-right {
