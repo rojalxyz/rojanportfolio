@@ -129,6 +129,7 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
     }
   });
 });
+<<<<<<< HEAD
 
 // 1. Make the dark/light mode toggle draggable (only on long press/hold)
 (function() {
@@ -312,3 +313,5 @@ document.querySelectorAll('.home-hero__social').forEach(social => {
     });
   });
 })();
+=======
+>>>>>>> 51fa763 (Update portfolio)
